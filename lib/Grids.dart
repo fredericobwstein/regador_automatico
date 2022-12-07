@@ -2,18 +2,24 @@
 
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:regador_automatico/main.dart';
 
-class Grids extends StatelessWidget {
+class Grids extends State<MyHomePage> {
+  TimeOfDay time = TimeOfDay(hour: 10, minute: 30);
+
   @override
   Widget build(BuildContext context) {
+    final hours = time.hour.toString().padLeft(2, '0');
+    final minutes = time.minute.toString().padLeft(2, '0');
+
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Regador Automático"),
       ),
       body: Container(
         child: Padding(
           padding: const EdgeInsets.all(10),
-
           // ignore: sort_child_properties_last
           child: GridView.count(
               crossAxisCount: 2,
@@ -31,14 +37,17 @@ class Grids extends StatelessWidget {
                     radius: 75,
                     lineWidth: 10,
                     backgroundColor: Colors.grey,
-                    progressColor: Colors.black,
+                    progressColor: Colors.white,
                     percent: 0.8,
                     center: Text(
                       "80%",
-                      style: TextStyle(fontSize: 40),
-                    ),    
-                    circularStrokeCap: CircularStrokeCap.round,
+                      style: TextStyle(
+                        fontSize: 40,
+                        color: Colors.white
+                        ),
                     ),
+                    circularStrokeCap: CircularStrokeCap.round,
+                  ),
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -52,16 +61,53 @@ class Grids extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white
                       ),
                     ),
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.blue,
-                  ),
-                ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.blue,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${hours}:${minutes}',
+                          style: TextStyle(
+                            fontSize: 30,
+                            color: Colors.white
+                            ),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          // ignore: sort_child_properties_last
+                          child: Text(
+                            'Selecione o tempo',
+                             style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue
+                              ),
+                            ),
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.white,
+                          ),
+                          onPressed: () async {
+                            TimeOfDay? newTime = await showTimePicker(
+                              context: context,
+                              initialTime: time,
+                            );
+
+                            if (newTime == null) return;
+
+                            setState(() => time = newTime);
+                          },
+                        )
+                      ],
+                    )),
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
@@ -74,6 +120,8 @@ class Grids extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white
                       ),
                     ),
                   ),
